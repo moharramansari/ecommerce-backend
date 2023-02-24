@@ -54,14 +54,13 @@ const getaUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const findUser = await User.findById(id);
   res.json(findUser);
-  console.log(id);
 });
 
 const updateUser = asyncHandler(async (req, res) => {
-  const { id } = req.params;
+  const { _id } = req.user;
   try {
     const updateUser = await User.findByIdAndUpdate(
-      id,
+      _id,
       {
         firstname: req.body.firstname,
         lastname: req.body.lastname,
