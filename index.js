@@ -6,6 +6,7 @@ const app = express();
 const dotenv = require("dotenv").config();
 const PORT = process.env.PORT || 4000;
 const authRoutes = require("./routes/authRoutes");
+const productRouter = require("./routes/productRoute");
 const cookieParser = require("cookie-parser");
 
 dbConnect();
@@ -13,7 +14,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use("/api/users", authRoutes);
+app.use("/api/user", authRoutes);
+app.use("/api/product", productRouter);
 
 app.use(notFound);
 app.use(errorHandler);
