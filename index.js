@@ -7,6 +7,7 @@ const dotenv = require("dotenv").config();
 const PORT = process.env.PORT || 4000;
 const authRoutes = require("./routes/authRoutes");
 const productRoutes = require("./routes/productRoute");
+const blogRoute = require('./routes/blogRoute')
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 
@@ -19,6 +20,7 @@ app.use(cookieParser());
 
 app.use("/api/user", authRoutes);
 app.use("/api/product", productRoutes);
+app.use("/api/blog", blogRoute);
 
 app.use(notFound);
 app.use(errorHandler);
