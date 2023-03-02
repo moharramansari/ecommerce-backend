@@ -31,10 +31,7 @@ let blogSchema = new mongoose.Schema(
       },
     ],
     dislikes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-    image: {
-      type: String,
-      default: "link of image",
-    },
+    images: [],
     author: {
       type: String,
       default: "Admin",
