@@ -8,33 +8,33 @@ const multerStorage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, file.filename, "-", uniqueSuffix + ".jpeg");
+    cb(null, file.fieldname + "-" + uniqueSuffix + ".jpeg");
   },
 });
 
-const multerFilter = (req, res, cb) => {
+const multerFilter = (req, file, cb) => {
   if (file.mimetype.startsWith("image")) {
     cb(null, true);
   } else {
     cb(
       {
-        message: "Unsupported file format ",
+        message: "Unsupported file format",
       },
       false
     );
   }
 };
 
-const upladPhoto = multer({
+const uploadPhoto = multer({
   storage: multerStorage,
   fileFilter: multerFilter,
   limits: { fieldSize: 2000000 },
 });
 
 const productImgResize = async (req, res, next) => {
-  if (!req.file) return next();
+  if (!req.files) return next();
   await Promise.all(
-    req.file.map(async (file) => {
+    req.files.map(async (file) => {
       await sharp(file.path)
         .resize(300, 300)
         .toFormat("jpeg")
@@ -46,9 +46,9 @@ const productImgResize = async (req, res, next) => {
 };
 
 const blogImgResize = async (req, res, next) => {
-  if (!req.file) return next();
+  if (!req.files) return next();
   await Promise.all(
-    req.file.map(async (file) => {
+    req.files.map(async (file) => {
       await sharp(file.path)
         .resize(300, 300)
         .toFormat("jpeg")
@@ -59,4 +59,4 @@ const blogImgResize = async (req, res, next) => {
   next();
 };
 
-module.exports = { upladPhoto, productImgResize, blogImgResize };
+module.exports = { uploadPhoto, productImgResize, blogImgResize };
