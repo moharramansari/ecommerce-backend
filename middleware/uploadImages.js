@@ -8,11 +8,11 @@ const multerStorage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, file.filename, "-", uniqueSuffix + ".jpeg");
+    cb(null, file.filename + "-" + uniqueSuffix + ".jpeg");
   },
 });
 
-const multerFilter = (req, res, cb) => {
+const multerFilter = (req, file, cb) => {
   if (file.mimetype.startsWith("image")) {
     cb(null, true);
   } else {
