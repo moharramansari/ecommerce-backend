@@ -55,6 +55,41 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 });
 
+//admin login
+const loginAdmin = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+  // console.log(email, password);
+  const findAdmin = await User.findOne({ email });
+  if (findAdmin.role != "admin") throw new Error("not authorized yet");
+  if (findAdmin && (await findAdmin.isPasswordMatched(password))) {
+    const refreshToken = await generateRefreshToken(findAdmin?.id);
+    const updateUser = await User.findByIdAndUpdate(
+      findAdmin.id,
+      {
+        refreshToken: refreshToken,
+      },
+      { new: true }
+    );
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      maxAge: 72 * 60 * 60 * 1000,
+    });
+    res.json({
+      _id: findAdmin?._id,
+      firstname: findAdmin?.firstname,
+      lastname: findAdmin?.lastname,
+      email: findAdmin?.email,
+      mobile: findAdmin?.mobile,
+      token: generateToken(findAdmin?._id),
+    });
+  } else {
+    res.json({
+      msg: "Invalid cridential",
+      success: false,
+    });
+  }
+});
+
 //handle refresh token
 const handleRefreshToken = asyncHandler(async (req, res) => {
   const cookie = req.cookies;
@@ -135,6 +170,27 @@ const updateUser = asyncHandler(async (req, res) => {
     res.json(updateUser);
   } catch (error) {
     throw new Error(error);
+  }
+});
+
+//save addresss
+
+const saveAddress = asyncHandler(async (req, res, next) => {
+  const { _id } = req.user;
+  validateMongoDbId(_id);
+  try {
+    const updateUser = await User.findByIdAndUpdate(
+      _id,
+      {
+        address: req?.body?.address,
+      },
+      {
+        new: true,
+      }
+    );
+    res.json(updateUser);
+  } catch (err) {
+    throw new Error(err);
   }
 });
 
@@ -242,9 +298,20 @@ const resetPassword = asyncHandler(async (req, res) => {
   res.json(user);
 });
 
+const getWishList = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  try {
+    const findUser = await User.findById(_id).populate("wishlist");
+    res.json(findUser);
+  } catch (err) {
+    throw new Error(err);
+  }
+});
+
 module.exports = {
   createUser,
   loginUser,
+  loginAdmin,
   getAllUser,
   getaUser,
   updateUser,
@@ -256,4 +323,6 @@ module.exports = {
   updatePassword,
   forgetPasswordToken,
   resetPassword,
+  getWishList,
+  saveAddress,
 };
