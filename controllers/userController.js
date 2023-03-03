@@ -1,4 +1,6 @@
 const User = require("../models/userModel");
+const Product = require("../models/productModel");
+const Cart = require("../models/cartModel");
 const asyncHandler = require("express-async-handler");
 const { generateToken } = require("../config/jwtToken");
 const { generateRefreshToken } = require("../config/refreshToken");
@@ -308,6 +310,35 @@ const getWishList = asyncHandler(async (req, res) => {
   }
 });
 
+const userCart = asyncHandler(async (req, res) => {
+  const { cart } = req.body;
+  const { _id } = req.user;
+  console.log(_id);
+  validateMongoDbId(_id);
+
+  try {
+    let product = [];
+    const user = await User.findById(_id);
+    //check if the user have already have product in the cart
+    const alreadyExistCart = await Cart.findOne({ orderBy: user._id });
+    if (alreadyExistCart) {
+      alreadyExistCart.remove();
+    }
+    for (let i = 0; i < cart.length; i++) {
+      let object = {};
+      object.product = cart[i]._id;
+      object.count = cart[i]._id;
+      object.color = cart[i]._id;
+      let getPrice = await Product.findById(cart[i]._id).select("price").exec();
+      object.price = getPrice.price;
+      product.push(object);
+    }
+    console.log(product);
+  } catch (err) {
+    throw new Error(err);
+  }
+});
+
 module.exports = {
   createUser,
   loginUser,
@@ -325,4 +356,5 @@ module.exports = {
   resetPassword,
   getWishList,
   saveAddress,
+  userCart,
 };
