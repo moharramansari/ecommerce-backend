@@ -16,7 +16,10 @@ const {
   loginAdmin,
   getWishList,
   saveAddress,
-  userCart
+  userCart,
+  getUserCart,
+  emptyCart,
+  applyCoupon,
 } = require("../controllers/userController");
 const { authMiddleware, isAdmin } = require("../middleware/authMiddlewares");
 const router = express.Router();
@@ -27,12 +30,15 @@ router.put("/reset-password/:token", resetPassword);
 router.put("/password", authMiddleware, isAdmin, updatePassword);
 router.post("/login", loginUser);
 router.post("/admin-login", loginAdmin);
-router.post("/cart", authMiddleware,userCart);
+router.post("/cart", authMiddleware, userCart);
+router.post("/cart/applyCoupon", authMiddleware, applyCoupon);
 router.get("/all-users", getAllUser);
 router.get("/refresh", handleRefreshToken);
 router.get("/logout", logout);
 router.get("/wishlist", authMiddleware, getWishList);
+router.get("/cart", authMiddleware, getUserCart);
 router.get("/:id", authMiddleware, isAdmin, getaUser);
+router.delete("/empty-cart", authMiddleware, emptyCart);
 router.put("/edit-user", authMiddleware, updateUser);
 router.put("/save-address", authMiddleware, saveAddress);
 router.delete("/:id", deleteUser);
