@@ -15,7 +15,7 @@ let orderSchema = new mongoose.Schema(
     paymentIntent: {},
     orderStatus: {
       type: String,
-      default: "Not precessed",
+      default: "Not processed",
       enum: [
         "Not processed",
         "Cash on Delivery",

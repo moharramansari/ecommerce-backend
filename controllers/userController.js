@@ -415,6 +415,7 @@ const createOrder = asyncHandler(async (req, res) => {
     } else {
       finalAmount = userCart.cartTotal * 100;
     }
+    console.log("its working in the good way");
     let newOrder = await new Order({
       products: userCart.products,
       paymentIntent: {
@@ -437,7 +438,8 @@ const createOrder = asyncHandler(async (req, res) => {
       };
     });
     const updated = await Product.bulkWrite(update, {});
-    res.json({ message: "success" });
+    res.json(newOrder);
+    console.log("order of the status", newOrder);
   } catch (err) {
     throw new Error(err);
   }
