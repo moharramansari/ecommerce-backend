@@ -26,7 +26,7 @@ let orderSchema = new mongoose.Schema(
       ],
     },
     orderBy: {
-      type: mongoose.Schema.type.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
   },
@@ -35,4 +35,4 @@ let orderSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("order", orderSchema);
+module.exports = mongoose.model("Order", orderSchema);
