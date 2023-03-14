@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+//Design an schema for the product order
 let orderSchema = new mongoose.Schema(
   {
     products: [

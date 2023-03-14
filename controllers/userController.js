@@ -415,19 +415,18 @@ const createOrder = asyncHandler(async (req, res) => {
     } else {
       finalAmount = userCart.cartTotal * 100;
     }
-    console.log("its working in the good way");
     let newOrder = await new Order({
       products: userCart.products,
       paymentIntent: {
         id: uniqid(),
         method: "COD",
         amount: finalAmount,
-        status: "Cash on delivery",
+        status: "Cash on Delivery",
         created: Date.now(),
-        currency: "usd",
+        currency: "INDIAN RUPEES",
       },
       orderBy: user._id,
-      orderStatus: "Cash on delivery",
+      orderStatus: "Cash on Delivery",
     }).save();
     let update = userCart.products.map((item) => {
       return {
@@ -444,6 +443,21 @@ const createOrder = asyncHandler(async (req, res) => {
     throw new Error(err);
   }
 });
+
+const getOrders = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  validateMongoDbId(_id);
+  try {
+    const userOrders = await Order.findOne({ orderBy: _id }).populate(
+      "products.product"
+    );
+    res.json(userOrders);
+  } catch (err) {
+    throw new Error(err);
+  }
+});
+
+const updateOrderStatus = asyncHandler(async (req, res) => {});
 
 module.exports = {
   createUser,
@@ -467,4 +481,6 @@ module.exports = {
   emptyCart,
   applyCoupon,
   createOrder,
+  getOrders,
+  updateOrderStatus,
 };
