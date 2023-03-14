@@ -30,7 +30,7 @@ const router = express.Router();
 router.post("/register", createUser);
 router.post("/forget-password-token", forgetPasswordToken);
 router.put("/reset-password/:token", resetPassword);
-router.put("order/update-order/:id", authMiddleware, isAdmin, updateOrderStatus);
+router.put("/order/update-order/:id", authMiddleware, isAdmin, updateOrderStatus);
 router.put("/password", authMiddleware, isAdmin, updatePassword);
 router.post("/login", loginUser);
 router.post("/admin-login", loginAdmin);
